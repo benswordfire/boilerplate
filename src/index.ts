@@ -6,9 +6,7 @@ import session from 'express-session';
 import { RedisStore } from 'connect-redis';
 import { pool } from './config/database/redis';
 import authRouter from './modules/authentication/routes/auth.routes';
-import storageRouter from './modules/storage/routes/storage.routes';
 import { authorize, currentUser } from './modules/authentication/middlewares/auth.middleware';
-import cors from 'cors';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,13 +19,6 @@ app.set('views', path.join(__dirname, 'modules', 'views'));
 
 app.use(expressLayouts);
 app.use('/public', express.static(path.join(__dirname, 'public')));
-
-app.use(
-  cors({
-    origin: 'http://localhost:3000', 
-    credentials: true, 
-  })
-);
 
 app.use(
   session({
@@ -46,7 +37,6 @@ app.use(
 );
 
 app.use(authRouter);
-app.use(storageRouter);
 
 app.get('/login', (request: Request, response: Response) => {
   response.render('login', { title: 'Login', layout: 'layouts/public' });
