@@ -1,0 +1,76 @@
+<form id="loginForm" action="api/v1/login" novalidate>
+  <p class="message"></p>
+  <fieldset id="emailField">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required />
+  </fieldset>
+  <fieldset id="passwordField">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required />
+  </fieldset>
+  <button class="primary" type="submit">Sign In</button>
+  <a href="/register" class="nav-link">Create a new account</a>
+</form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('pageshow', () => {
+      sessionStorage.clear();
+      document.getElementById('loginForm').reset();
+    });
+
+    document.body.addEventListener('submit', async (event) => {
+      const form = event.target.closest('form');
+      const endpoint = form.getAttribute('action');
+      const submitButton = form.querySelector('button[type="submit"]');
+
+      if (form) {
+        event.preventDefault();
+
+        const isTwoFactorStep = !!document.getElementById('twoFactorAuthCode');
+        const formData = new FormData(form);
+        const data = {};
+
+        if (isTwoFactorStep) {
+          data.twoFactorAuthToken = formData.get('twoFactorAuthCode');
+        } else {
+          data.email = formData.get('email');
+          data.password = formData.get('password');
+        }
+
+        try {
+          const response = await fetch(`${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+
+          const result = await response.json();
+
+          if (result.twoFactorRequired) {
+            document.getElementById('emailField')?.remove();
+            document.getElementById('passwordField')?.remove();
+
+            if (!document.getElementById('twoFactorAuthCode')) {
+              const twoFactorAuthField = document.createElement('fieldset');
+              twoFactorAuthField.innerHTML = `
+                <label for="twoFactorAuthCode">Two Factor Auth Code</label>
+                <input type="text" id="twoFactorAuthCode" name="twoFactorAuthCode" required />
+              `;
+              form.insertBefore(twoFactorAuthField, submitButton);
+            }
+
+            submitButton.textContent = 'Verify Code';
+            document.querySelector('.message').textContent = 'Please enter your 2FA code.';
+          } else if (result.authorized) {
+            window.location.href = '/settings';
+          } else {
+            document.querySelector('.message').textContent = result.message;
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      }
+    });
+  });
+</script>

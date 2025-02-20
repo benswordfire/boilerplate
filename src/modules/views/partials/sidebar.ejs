@@ -1,0 +1,189 @@
+<style>
+
+#sidebar {
+  height: 100vh;
+  width: 240px;
+  padding: 12px;
+  border-right: 1px solid var(--text-color);
+  position: sticky;
+  top: 0;
+  align-self: start;
+  transition: 300ms ease-in-out;
+  overflow: hidden;
+  text-wrap: nowrap;
+}
+
+#sidebar.close {
+  padding: 12px;
+  width: 64px;
+}
+
+#sidebar > ul > li:first-child {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+  gap: 10px;
+  .logo {
+    text-transform: uppercase;
+    font-size: 20px;
+    font-weight: 700;
+  }
+}
+
+#sidebar ul li.active a {
+  border-radius: 4px;
+}
+
+#sidebar a,
+#sidebar .dropdown-btn,
+#sidebar .logo {
+  text-decoration: none;
+  color: #161A1D;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+
+.dropdown-btn {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+#sidebar sl-icon {
+  flex-shrink: 0;
+  padding: 8px;
+}
+
+#sidebar a span,
+#sidebar .dropdown-btn span {
+  flex-grow: 1;
+  font-weight: 500;
+}
+
+#sidebar a:hover,
+#sidebar .dropdown-btn:hover {
+  background-color: var(--secondary-color)
+}
+
+#sidebar .sub-menu {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: 300ms ease-in-out;
+
+  > div {
+    overflow: hidden;
+  }
+}
+
+#sidebar .sub-menu.show {
+  grid-template-rows: 1fr;
+}
+
+.dropdown-btn sl-icon {
+  transition: 200ms ease;
+}
+
+.rotate sl-icon:last-child {
+  rotate: 180deg;
+}
+
+#sidebar .sub-menu {
+  padding-left: 8px;
+}
+
+#toggle-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--primary-color);
+  cursor: pointer;
+}
+
+.profile-card {
+  width: calc(100% - 24px);
+  position: absolute;
+  bottom: 0;
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.profile-avatar {
+  height: 40px;
+  width: 40px;
+  background-color: var(--primary-color);
+  color: black;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  font-size: 24px;
+}
+</style>
+
+<nav id="sidebar">
+  <ul>
+    <li>
+      <span class="logo">Pied Piper</span>
+      <button onclick="toggleSidebar()" id="toggle-btn">
+        <sl-icon name="list" style="height: 24px; width: 24px;"></sl-icon>
+      </button>
+    </li>
+    <li>
+      <a href="/files" class="nav-link">
+        <sl-icon name="folder-fill" style="height: 24px; width: 24px;"></sl-icon>
+        <span>Files</span>
+      </a>
+    </li>
+    <li class="active">
+      <a href="/settings" class="nav-link">
+        <sl-icon name="gear-fill" style="height: 24px; width: 24px;"></sl-icon>
+        <span>Settings</span>
+      </a>
+    </li>
+  </ul>
+  <li class="profile-card">
+    <div class="profile-avatar">
+      <sl-icon name="person-fill" style="height: 24px; width: 24px;"></sl-icon>
+    </div>
+    <div class="profile-info">
+      <p style="font-weight: 600;"><%= user.username %></p>  
+      <p style="font-weight: 300; font-size: 14px;">Pied Piper Inc.</p>
+    </div>
+    <a href="/logout" class="nav-link">
+      <sl-icon name="box-arrow-right" style="height: 24px; width: 24px;"></sl-icon>
+    </a>
+  </li>
+</nav>
+
+<script>
+  const toggleButton = document.getElementById("toggle-btn");
+  console.log(toggleButton)
+  const sidebar = document.getElementById("sidebar");
+  console.log(sidebar)
+  function toggleSidebar() {
+    console.log('HELLO')
+    sidebar.classList.toggle("close");
+    toggleButton.classList.toggle("rotate");
+  }
+  
+  function toggleSubMenu (button) {
+    button.nextElementSibling.classList.toggle("show");
+    button.classList.toggle("rotate");
+  }
+</script>

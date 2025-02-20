@@ -1,0 +1,93 @@
+<form id="uploadForm" action="api/v1/upload" method="post" enctype="multipart/form-data" novalidate>
+  <p class="message"></p>
+  <fieldset id="fileField">
+    <label for="file">Upload files</label>
+    <input type="file" id="file" name="file" accept=".doc,.docx,.pdf" required />
+  </fieldset>
+  <button class="primary" type="submit">Upload</button>
+</form>
+<table class="table">
+  <thead>
+    <tr>
+      <th>File Name</th>
+      <th>Type</th>
+      <th>Size</th>
+      <th>Upload Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="filesTableBody">
+  </tbody>
+</table>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+
+  try {
+    const response = await fetch('/api/v1/files', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      const filesTableBody = document.getElementById('filesTableBody');
+      filesTableBody.innerHTML = '';
+
+      result.data.forEach(file => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+          <td>${file.originalName}</td>
+          <td>${
+            file.mimeType === 'application/pdf' ? 'PDF' : 
+            file.mimeType === 'application/msword' ? 'DOC' :
+            file.mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ? 'DOCX' :
+            file.mimeType.split('/')[1].toUpperCase()
+          }</td>
+          <td>${(file.size / 1024).toFixed()} KB</td>
+          <td>${new Date(file.uploadedAt).toLocaleString()}</td>
+          <td>
+            <a href="api/v1/download/${file.id}" class="action download">Download</a>
+            <form action="api/v1/delete/${file.id}" method="POST" style="display:inline;">
+              <button type="submit" class="action delete">Delete</button>
+            </form>
+          </td>
+        `;
+
+        filesTableBody.appendChild(row);
+      });
+    } else {
+      console.error('Failed to fetch files:', result.message);
+    }
+  } catch (error) {
+    console.error('Error fetching files:', error);
+  }
+});
+
+document.body.addEventListener('submit', async (event) => {
+  const form = event.target.closest('form');
+  const endpoint = form.getAttribute('action');
+  if (form) {
+    event.preventDefault();
+    const formData = new FormData(form);
+    try {
+      const response = await fetch(`${endpoint}`, {
+        method: 'POST',
+        body: formData
+      });
+      const result = await response.json();
+      document.querySelector('.message').textContent = result.message;
+
+      if (result.success) {
+        window.location.reload(); 
+      }
+    } catch (error) {
+      console.error('Upload failed:', error);
+    }
+  }
+});
+</script>

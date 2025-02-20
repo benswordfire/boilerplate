@@ -1,0 +1,153 @@
+/* CSS RESET */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+}
+
+html {
+  font-size: 100%;
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed; 
+}
+
+img, picture, video, canvas, svg {
+  max-width: 100%;
+  display: block;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* COLOR PALETTE */
+
+:root {
+  --primary-color: #57CC99;
+  --secondary-color: #C7F9CC;
+  --text-color: #040C10;
+  --background-color: #f9f9f9;
+  --danger: #ef476f;
+}
+
+/* BUTTON */
+
+button.primary {
+  padding: 8px 16px;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+button.action {
+  background-color: var(--danger);
+  color: var(--background-color);
+  padding: 8px 16px;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+/* LAYOUT */
+
+body#private {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+body#private main {
+  height: 100vh;
+  padding: 16px;
+}
+
+body#public main  {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* FORM */
+
+form {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border: 2px solid silver;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+input:focus {
+  border: 2px solid black;
+}
+
+fieldset {
+  border: none;
+}
+
+form a {
+  text-align: center;
+  text-decoration: underline;
+}
+
+.message {
+  text-align: center;
+}
+
+
+/* TABLE */
+
+table {
+  margin-top: 10px;
+  background-color: var(--secondary-color);
+}
+
+th {
+  background-color: var(--primary-color);
+  text-align: left;
+  padding: 10px;
+}
+
+td {
+  background-color: var(--background-color);
+  padding: 10px;
+}

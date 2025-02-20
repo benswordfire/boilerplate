@@ -1,0 +1,74 @@
+<form id="loginForm" action="api/v1/update" novalidate>
+  <p class="message"></p>
+  <h1>Settings</h1>
+  <fieldset id="firstNameField">
+    <label for="firstName">First Name</label>
+    <input type="text" id="firstName" name="firstName" placeholder="<%- user.firstName %>"/>
+  </fieldset>
+  <fieldset id="lastNameField">
+    <label for="lastName">Last Name</label>
+    <input type="text" id="lastName" name="lastName" placeholder="<%- user.lastName %>"/>
+  </fieldset>
+  <fieldset id="usernameField">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" placeholder="<%- user.username %>"/>
+  </fieldset>
+  <fieldset id="emailField">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" placeholder="<%- user.email %>"/>
+  </fieldset>
+  <fieldset id="phoneNumberField">
+    <label for="phoneNumber">Phone Number</label>
+    <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="<%- user.phoneNumber %>" />
+  </fieldset>
+  <fieldset id="twoFactorField">
+    <legend>Two-Factor Authentication</legend>
+    <label for="isTwoFactorEnabled">Select 2FA Method</label>
+    <select id="isTwoFactorEnabled" name="isTwoFactorEnabled">
+      <option value="disabled" <%- user.isTwoFactorEnabled === "disabled" ? "selected" : "" %>>Disabled</option>
+      <option value="email" <%- user.isTwoFactorEnabled === "email" ? "selected" : "" %>>Email</option>
+      <% if (user.phoneNumber) { %>
+          <option value="sms" <%- user.isTwoFactorEnabled === "sms" ? "selected" : "" %>>SMS</option>
+      <% } %>
+    </select>
+  </fieldset>
+</fieldset>
+  <fieldset id="passwordField">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required />
+  </fieldset>
+  <button class="primary" type="submit">Update</button>
+</form>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('submit', async function (event) {
+    const form = event.target.closest('form');
+      const endpoint = form.getAttribute('action');
+      if (form) {
+        event.preventDefault();
+        const data = Object.fromEntries(new FormData(form).entries());
+  
+      try {
+        const response = await fetch('/api/v1/update-settings', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+        const result = response.json();
+
+        if (result.success) {
+          document.querySelector('.message').textContent = result.message;
+          console.log('Settings updated successfully');
+          window.location.reload();
+        } else {
+          console.error('Failed to update settings');
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
+      }
+    }
+  });
+})
+</script>

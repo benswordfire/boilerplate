@@ -1,0 +1,35 @@
+<form action="api/v1/email-verification" novalidate>
+  <p class="message"></p>
+  <fieldset>
+    <label for="token" hidden>Password</label>
+    <input type="password" id="token" name="token" value="<%- token %>" required hidden/>
+  </fieldset>
+  <a href='/login'>Go to login</a>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('form');
+  if (form) {
+    const endpoint = form.getAttribute('action');
+    const data = Object.fromEntries(new FormData(form).entries());
+    console.log('Form data:', data);
+    
+    fetch(`http://localhost:3000/${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+      console.log(result);
+      document.querySelector('.message').textContent = result.message;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+});
+</script>
