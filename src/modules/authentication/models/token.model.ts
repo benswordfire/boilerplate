@@ -37,12 +37,35 @@ export const removeTwoFactorAuthToken = async (id: string): Promise<void> => {
 
 // EMAIL VERIFICATION TOKEN
 
-export const insertEmailVerificationToken = async (email: string, token: string, expiresAt: Date): Promise<mysql.ResultSetHeader> => {
-  const query = 'INSERT INTO email_verification_tokens (email, token, expiresAt) VALUES (?, ?, ?)';
+export const insertEmailVerificationToken = async (userId: string, token: string, expiresAt: Date): Promise<mysql.ResultSetHeader> => {
+  const query = 'INSERT INTO email_verification_tokens (userId, token, expiresAt) VALUES (?, ?, ?)';
 
-  const [rows]: [mysql.ResultSetHeader, mysql.FieldPacket[]] = await pool.execute<mysql.ResultSetHeader>(query, [email, token, expiresAt]);
+  const [rows]: [mysql.ResultSetHeader, mysql.FieldPacket[]] = await pool.execute<mysql.ResultSetHeader>(query, [userId, token, expiresAt]);
 
   return rows;
+}
+
+export const findEmailVerificationTokenByUserId = async (
+  userId: string
+): Promise<Pick<EmailVerificationToken, 'id'> | null> => {
+  try {
+    const query = `
+    SELECT id 
+    FROM email_verification_tokens 
+    WHERE userId = ? 
+    LIMIT 1`;
+  
+    const [rows]: [mysql.RowDataPacket[], mysql.FieldPacket[]] = await pool.execute<mysql.RowDataPacket[]>(query, [userId]);
+
+    if (!rows.length) return null;
+  
+    const result: Pick<EmailVerificationToken, 'id'>  = { id: rows[0].id }
+  
+    return result;
+  } catch (error) {
+    console.error('Failed to find email verification token:', error);
+    throw new Error('Failed to retrieve verification token', { cause: error});
+  }
 }
 
 export const findEmailVerificationTokenByEmail = async (email: string): Promise<EmailVerificationToken | null> => {

@@ -39,13 +39,13 @@ export const registerUser = async (data: RegisterFormData): Promise<Result> => {
         message: 'User already registered!',
         status: 409,
       };
-    }
+    };
 
-    const passwordHash = await bcrypt.hash(password, 10);
+    const passwordHash = await bcrypt.hash(password, 12);
 
-    await insertUser(email, passwordHash);
+    const { userId } = await insertUser(email, passwordHash);
 
-    const token = await createEmailVerificationToken(email);
+    const token = await createEmailVerificationToken(userId);
 
     await sendEmailVerificationEmail(email, token);
 
@@ -190,9 +190,17 @@ export const loginUser = async (data: LoginFormData): Promise<Result> => {
       return {
         success: false,
         message: 'Invalid credentials',
-        status: 401,
+        status: 401
       };
     }
+
+    if (!user.isEmailVerified) {
+      return {
+        success: false,
+        message: 'Invalid credentials',
+        status: 401
+      };
+    };
 
     if (user.isTwoFactorEnabled === 'email') {
       const token = await createTwoFactorAuthToken(user.id);
@@ -206,8 +214,8 @@ export const loginUser = async (data: LoginFormData): Promise<Result> => {
       };
 
       return {
-        success: true,
-        status: 200,
+        success: false,
+        status: 202,
         message: 'twoFactorIsRequired',
         isTwoFactorEnabled: user.isTwoFactorEnabled,
       };
@@ -224,8 +232,8 @@ export const loginUser = async (data: LoginFormData): Promise<Result> => {
       };
 
       return {
-        success: true,
-        status: 200,
+        success: false,
+        status: 202,
         message: 'twoFactorIsRequired',
         isTwoFactorEnabled: user.isTwoFactorEnabled,
       };

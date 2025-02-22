@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { removeTwoFactorAuthToken, insertTwoFactorAuthToken, findTwoFactorAuthTokenByUserId, removeEmailVerificationToken, findEmailVerificationTokenByEmail, insertEmailVerificationToken } from '../models/token.model';
+import { removeTwoFactorAuthToken, insertTwoFactorAuthToken, findTwoFactorAuthTokenByUserId, removeEmailVerificationToken, findEmailVerificationTokenByEmail, insertEmailVerificationToken, findEmailVerificationTokenByUserId } from '../models/token.model';
 
 const generateTwoFactorAuthToken = (): string => {
   return crypto.randomInt(100_000, 1_000_000).toString();
@@ -43,14 +43,14 @@ export const createTwoFactorAuthToken = async(
 }
 
 export const createEmailVerificationToken = async(
-  email: string
+  userId: string
 ): Promise<string> => {
   try {
-    if (!email) {
+    if (!userId) {
       throw new Error('Email is missing')
     }
 
-    const existingToken = await findEmailVerificationTokenByEmail(email);
+    const existingToken = await findEmailVerificationTokenByUserId(userId);
 
     if (existingToken) {
       await removeEmailVerificationToken(existingToken.id)
@@ -59,7 +59,7 @@ export const createEmailVerificationToken = async(
     const token = generateEmailVerificationToken();
     const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
 
-    const result = await insertEmailVerificationToken(email, token, expiresAt)
+    const result = await insertEmailVerificationToken(userId, token, expiresAt)
 
     if (result.affectedRows !== 1) {
       throw new Error(

@@ -3,11 +3,14 @@ import pool from '../../../config/database/mysql';
 import { User } from '../types/User';
 
 export const insertUser = async (
-  email: string,
+  email: string, 
   passwordHash: string
 ): Promise<mysql.ResultSetHeader> => {
+  
   const query = `
-    INSERT INTO users (email, passwordHash)
+    INSERT INTO users (
+    email, 
+    passwordHash)
     VALUES (?, ?)
   `;
 
@@ -16,6 +19,7 @@ export const insertUser = async (
 };
 
 export const findAllUsers = async (): Promise<User[]> => {
+  
   const query = `
     SELECT 
       userId, 
@@ -31,6 +35,7 @@ export const findAllUsers = async (): Promise<User[]> => {
 };
 
 export const findUserById = async (userId: string): Promise<User | null> => {
+  
   const query = `
     SELECT 
       id,
@@ -54,7 +59,9 @@ export const findUserById = async (userId: string): Promise<User | null> => {
 };
 
 export const findUserByEmail = async (email: string): Promise<User | null> => {
+  
   const normalizedEmail = email.trim().toLowerCase();
+  
   const query = `
     SELECT 
       id, 
@@ -82,6 +89,7 @@ export const refreshUser = async (
 ): Promise<mysql.ResultSetHeader> => {
 
   const fieldsToUpdate = Object.keys(updateFields);
+  
   if (fieldsToUpdate.length === 0) {
     throw new Error('No fields provided to update');
   }

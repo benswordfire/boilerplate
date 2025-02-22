@@ -3,7 +3,6 @@ import { loginUser, registerUser, updateUser, verifyEmail } from '../services/au
 import { LoginFormData } from '../types';
 import { RegisterFormSchema } from '../types/RegisterFormSchema';
 import { z } from 'zod';
-import { refreshUser } from '../models/auth.models';
 import { User } from '../types/User';
 import bcrypt from 'bcryptjs';
 import { pool } from '../../../config/database/redis';
@@ -16,10 +15,10 @@ export const register = async (
     const formData = RegisterFormSchema.parse(request.body);
     const result = await registerUser(formData);
 
-    response.status(result.status).json({
-      success: result.success,
-      message: result.message
-    });
+    response
+    .status(result.status)
+    .json({ success: result.success, message: result.message });
+
   } catch (error) {
     console.error(error);
     
@@ -28,7 +27,9 @@ export const register = async (
         success: false,
         message: error.errors.map(e => e.message).join(', ')
       });
+      return;
     }
+
     
     response.status(500).json({
       success: false,
