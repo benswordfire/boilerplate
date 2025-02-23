@@ -27,7 +27,9 @@ import {
 } from './token.service';
 import { User } from '../types/User';
 
-export const registerUser = async (data: RegisterFormData): Promise<Result> => {
+export const registerUser = async (
+  data: RegisterFormData
+): Promise<Result> => {
   try {
     const { email, password } = data;
 
@@ -42,12 +44,26 @@ export const registerUser = async (data: RegisterFormData): Promise<Result> => {
     };
 
     const passwordHash = await bcrypt.hash(password, 12);
-
-    const { userId } = await insertUser(email, passwordHash);
-
-    const token = await createEmailVerificationToken(userId);
-
+    const start = performance.now()
+    const result = await insertUser(email, passwordHash);
+    const end = performance.now();
+    console.log(`insertUser execution time: ${end - start} ms`);
+    if (!result) {
+      return {
+        success: false,
+        message: 'Registration failed',
+        status: 400
+      }
+    }
+    const startToken = performance.now()
+    const token = await createEmailVerificationToken(result.id);
+    const endToken = performance.now();
+    console.log(`createEmailVerificationToken execution time: ${endToken - startToken} ms`);
+    
+    const startEmail = performance.now()
     await sendEmailVerificationEmail(email, token);
+    const endEmail = performance.now()
+    console.log(`sendEmailVerificationToken execution time: ${endEmail - startEmail} ms`);
 
     return {
       success: true,
@@ -87,7 +103,7 @@ export const verifyEmail = async (token: string): Promise<Result> => {
       };
     }
 
-    const user = await findUserByEmail(existingToken.email);
+    const user = await findUserById(existingToken.userId);
 
     if (!user) {
       return {
@@ -300,4 +316,8 @@ export const updateUser = async (
       status: 500,
     };
   }
+}
+
+function findUserByUserId(email: any) {
+  throw new Error('Function not implemented.');
 }

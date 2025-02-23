@@ -5,17 +5,26 @@ import { User } from '../types/User';
 export const insertUser = async (
   email: string, 
   passwordHash: string
-): Promise<mysql.ResultSetHeader> => {
-  
-  const query = `
-    INSERT INTO users (
-    email, 
-    passwordHash)
-    VALUES (?, ?)
-  `;
+): Promise<Pick<User, 'id'> | null> => {
+  try {
+    const query = `
+      INSERT INTO users (email, passwordHash)
+      VALUES (?, ?)
+    `;
 
-  const [result] = await pool.execute<mysql.ResultSetHeader>(query, [email, passwordHash]);
-  return result;
+    await pool.execute<mysql.ResultSetHeader>(query, [email, passwordHash]);
+
+    const [rows]: [mysql.RowDataPacket[], mysql.FieldPacket[]] = await pool.execute<mysql.RowDataPacket[]>(`SELECT id FROM users WHERE email = ? LIMIT 1`, [email]);
+
+    if (!rows.length) return null;
+
+    const result: Pick<User, 'id'> = { id: rows[0].id };
+
+    return result;
+  } catch (error) {
+    console.error('Failed to insert user into database', error);
+    throw new Error('Failed to retrieve verification token');
+  }
 };
 
 export const findAllUsers = async (): Promise<User[]> => {

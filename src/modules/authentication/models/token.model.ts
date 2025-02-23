@@ -64,7 +64,7 @@ export const findEmailVerificationTokenByUserId = async (
     return result;
   } catch (error) {
     console.error('Failed to find email verification token:', error);
-    throw new Error('Failed to retrieve verification token', { cause: error});
+    throw new Error('Failed to retrieve verification token');
   }
 }
 
