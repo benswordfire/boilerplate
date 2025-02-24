@@ -54,6 +54,10 @@ app.get('/settings', authorize, currentUser, (request: Request, response: Respon
   response.render('settings', { title: 'Settings', layout: 'layouts/private', user: request.user });
 });
 
+app.get('/orders', authorize, currentUser, (request: Request, response: Response) => {
+  response.render('orders', { title: 'Orders', layout: 'layouts/private', user: request.user });
+});
+
 app.get('/files', authorize, (request: Request, response: Response) => {
   response.render('files', { title: 'Files', layout: 'layouts/private', user: request.user });
 });

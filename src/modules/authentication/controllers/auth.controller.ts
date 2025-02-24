@@ -76,7 +76,7 @@ export const login = async (
     };
     const result = await loginUser(formData);
 
-    if(result.success && result.message === 'twoFactorIsRequired') {
+    if(!result.success && result.message === 'twoFactorIsRequired') {
       response
         .status(result.status)
         .json({ twoFactorRequired: true })
@@ -125,7 +125,7 @@ export const update = async (
     console.log('UPDATE2:', updateData)
 
     const result = await updateUser(userId, updateData);
-
+    console.log('UPDATE RESULT:', result)
     if (result.success) {
       response
         .status(result.status)

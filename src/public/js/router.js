@@ -3,7 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.body.addEventListener('click', async (event) => {
 
-    const link = event.target.closest('.nav-link');
+    let link = null;
+    for (const el of event.composedPath()) {
+      if (el.classList && el.classList.contains('nav-link')) {
+        link = el;
+        break;
+      }
+    }
     if (link) {
       event.preventDefault();
 

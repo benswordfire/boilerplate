@@ -1,5 +1,6 @@
 import mysql from 'mysql2/promise';
 import pool from '../../../config/database/mysql';
+import { logger } from '../../../config/logger/logger';
 import { User } from '../types/User';
 
 export const insertUser = async (
@@ -19,10 +20,10 @@ export const insertUser = async (
     if (!rows.length) return null;
 
     const result: Pick<User, 'id'> = { id: rows[0].id };
-
+    logger.info(`User with id:${result} insterted to DB`)
     return result;
   } catch (error) {
-    console.error('Failed to insert user into database', error);
+    logger.error('Failed to insert user into database', error)
     throw new Error('Failed to retrieve verification token');
   }
 };
@@ -43,28 +44,36 @@ export const findAllUsers = async (): Promise<User[]> => {
   return rows as User[];
 };
 
-export const findUserById = async (userId: string): Promise<User | null> => {
-  
-  const query = `
-    SELECT 
-      id,
-      username, 
-      email,
-      firstName,
-      lastName,
-      isEmailVerified,
-      phoneNumber,
-      isPhoneNumberVerified, 
-      isTwoFactorEnabled, 
-      isEmailVerified, 
-      createdAt,
-      updatedAt
-    FROM users 
-    WHERE id = ?
-  `;
+export const findUserById = async (
+  userId: string
+): Promise<User | null> => {
+  try {
+    const query = `
+      SELECT 
+        id,
+        username, 
+        email,
+        firstName,
+        lastName,
+        isEmailVerified,
+        phoneNumber,
+        isPhoneNumberVerified, 
+        isTwoFactorEnabled, 
+        isEmailVerified, 
+        createdAt,
+        updatedAt
+      FROM users 
+      WHERE id = ?
+    `;
+    const [rows] = await pool.execute<mysql.RowDataPacket[]>(query, [userId]);
+    console.log([rows])
+    console.log(rows[0])
+    return rows.length ? (rows[0] as User) : null;
+  } catch (error) {
+    logger.error('Failed to insert user into database', error)
+    throw new Error('Failed to retrieve verification token');
+  }
 
-  const [rows] = await pool.execute<mysql.RowDataPacket[]>(query, [userId]);
-  return rows.length ? (rows[0] as User) : null;
 };
 
 export const findUserByEmail = async (email: string): Promise<User | null> => {

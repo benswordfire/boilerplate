@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= title %></title>
   <link rel="stylesheet" href="/public/css/style.css">
-  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.1/cdn/shoelace-autoloader.js"></script>   
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.1/cdn/shoelace-autoloader.js"></script>  
+  <script></script> 
 </head>
 <body id="private">
-  <%- include('../partials/sidebar') %>
+  <sidebar-component><%= user.username %></sidebar-component>
   <main id="content">
     <%- body %>
   </main>
+  <script defer src="../../../public/components/sidebar-component.js"></script>
+  <script src="/public/js/router.js"></script>
 </body>
 </html>

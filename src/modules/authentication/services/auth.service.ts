@@ -44,10 +44,9 @@ export const registerUser = async (
     };
 
     const passwordHash = await bcrypt.hash(password, 12);
-    const start = performance.now()
+
     const result = await insertUser(email, passwordHash);
-    const end = performance.now();
-    console.log(`insertUser execution time: ${end - start} ms`);
+
     if (!result) {
       return {
         success: false,
@@ -55,15 +54,9 @@ export const registerUser = async (
         status: 400
       }
     }
-    const startToken = performance.now()
     const token = await createEmailVerificationToken(result.id);
-    const endToken = performance.now();
-    console.log(`createEmailVerificationToken execution time: ${endToken - startToken} ms`);
     
-    const startEmail = performance.now()
     await sendEmailVerificationEmail(email, token);
-    const endEmail = performance.now()
-    console.log(`sendEmailVerificationToken execution time: ${endEmail - startEmail} ms`);
 
     return {
       success: true,
