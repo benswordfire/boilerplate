@@ -66,8 +66,7 @@ export const findUserById = async (
       WHERE id = ?
     `;
     const [rows] = await pool.execute<mysql.RowDataPacket[]>(query, [userId]);
-    console.log([rows])
-    console.log(rows[0])
+
     return rows.length ? (rows[0] as User) : null;
   } catch (error) {
     logger.error('Failed to insert user into database', error)
