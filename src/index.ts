@@ -20,6 +20,8 @@ app.set('views', path.join(__dirname, 'modules', 'views'));
 app.use(expressLayouts);
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
+app.use('/htmx', express.static(path.join(__dirname, '..', 'node_modules', 'htmx.org', 'dist')));
+
 app.use(
   session({
     store: new RedisStore({ client: pool }),
@@ -51,15 +53,19 @@ app.get('/email-verification', (request: Request, response: Response) => {
 });
 
 app.get('/settings', authorize, currentUser, (request: Request, response: Response) => {
-  response.render('settings', { title: 'Settings', layout: 'layouts/private', user: request.user });
+  if (request.headers['hx-request']) {
+    response.render('settings', { title: 'Settings', layout: false, user: request.user });
+  } else {
+    response.render('settings', { title: 'Settings', layout: 'layouts/private', user: request.user });
+  }
 });
 
 app.get('/orders', authorize, currentUser, (request: Request, response: Response) => {
-  response.render('orders', { title: 'Orders', layout: 'layouts/private', user: request.user });
-});
-
-app.get('/files', authorize, (request: Request, response: Response) => {
-  response.render('files', { title: 'Files', layout: 'layouts/private', user: request.user });
+  if (request.headers['hx-request']) {
+    response.render('orders', { title: 'Orders', layout: false, user: request.user });
+  } else {
+    response.render('orders', { title: 'Orders', layout: 'layouts/private', user: request.user });
+  }
 });
 
 app.listen(PORT, () => console.log(`SERVER IS RUNNING ON PORT: ${PORT}`));

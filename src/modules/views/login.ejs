@@ -9,7 +9,13 @@
     <input type="password" id="password" name="password" required />
   </fieldset>
   <button class="primary" type="submit">Sign In</button>
-  <a href="/register" class="nav-link">Create a new account</a>
+  <a href="/register" 
+    hx-get="/register" 
+    hx-target="#content" 
+    hx-swap="innerHTML"
+    hx-push-url="true">
+    Create a new account
+  </a>
 </form>
 
 <script>

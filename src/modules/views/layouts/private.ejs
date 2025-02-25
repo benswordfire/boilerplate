@@ -6,14 +6,12 @@
   <title><%= title %></title>
   <link rel="stylesheet" href="/public/css/style.css">
   <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.1/cdn/shoelace-autoloader.js"></script>  
-  <script></script> 
+  <script src="/htmx/htmx.min.js"></script>
 </head>
 <body id="private">
-  <sidebar-component><%= user.username %></sidebar-component>
+  <%- include('../partials/sidebar') %>
   <main id="content">
     <%- body %>
   </main>
-  <script defer src="../../../public/components/sidebar-component.js"></script>
-  <script src="/public/js/router.js"></script>
 </body>
 </html>

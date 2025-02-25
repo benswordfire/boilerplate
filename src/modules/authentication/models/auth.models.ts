@@ -23,25 +23,9 @@ export const insertUser = async (
     logger.info(`User with id:${result} insterted to DB`)
     return result;
   } catch (error) {
-    logger.error('Failed to insert user into database', error)
-    throw new Error('Failed to retrieve verification token');
+    logger.error(`Failed to insert user to database with email: ${email}`, error)
+    throw new Error('Failed to create user in database');
   }
-};
-
-export const findAllUsers = async (): Promise<User[]> => {
-  
-  const query = `
-    SELECT 
-      userId, 
-      email,
-      isTwoFactorEnabled, 
-      isEmailVerified, 
-      createdAt
-    FROM users
-  `;
-
-  const [rows] = await pool.execute<mysql.RowDataPacket[]>(query);
-  return rows as User[];
 };
 
 export const findUserById = async (
@@ -65,39 +49,54 @@ export const findUserById = async (
       FROM users 
       WHERE id = ?
     `;
-    const [rows] = await pool.execute<mysql.RowDataPacket[]>(query, [userId]);
+    const [rows]: [mysql.RowDataPacket[], mysql.FieldPacket[]] = await pool.execute<mysql.RowDataPacket[]>(query, [userId]);
 
-    return rows.length ? (rows[0] as User) : null;
+    if (!rows.length) return null;
+
+    const result: User = rows[0] as User;
+
+    return result;
   } catch (error) {
-    logger.error('Failed to insert user into database', error)
-    throw new Error('Failed to retrieve verification token');
+    logger.error(`Failed to find user with id: ${userId}`, error)
+    throw new Error('Failed to retrieve user by id');
   }
 
 };
 
-export const findUserByEmail = async (email: string): Promise<User | null> => {
+export const findUserByEmail = async (
+  email: string
+): Promise<User | null> => {
+  try {
+    const normalizedEmail = email.trim().toLowerCase();
+    
+    const query = `
+      SELECT 
+        id, 
+        email,
+        passwordHash,
+        isEmailVerified,
+        phoneNumber,
+        isPhoneNumberVerified, 
+        isTwoFactorEnabled, 
+        isEmailVerified, 
+        createdAt,
+        updatedAt
+      FROM users 
+      WHERE email = ?
+      LIMIT 1
+    `;
+    const [rows]: [mysql.RowDataPacket[], mysql.FieldPacket[]] = await pool.execute<mysql.RowDataPacket[]>(query, [normalizedEmail]);
   
-  const normalizedEmail = email.trim().toLowerCase();
+    if (!rows.length) return null;
   
-  const query = `
-    SELECT 
-      id, 
-      email,
-      passwordHash,
-      isEmailVerified,
-      phoneNumber,
-      isPhoneNumberVerified, 
-      isTwoFactorEnabled, 
-      isEmailVerified, 
-      createdAt,
-      updatedAt
-    FROM users 
-    WHERE email = ?
-    LIMIT 1
-  `;
-
-  const [rows] = await pool.execute<mysql.RowDataPacket[]>(query, [normalizedEmail]);
-  return rows.length ? (rows[0] as User) : null;
+    const result: User = rows[0] as User;
+  
+    return result;
+  } catch (error) {
+    logger.error(`Failed to find user with email: ${email}`, error)
+    throw new Error('Failed to retrieve user by email');
+  }
+  
 };
 
 export const refreshUser = async (
