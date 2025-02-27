@@ -1,21 +1,17 @@
 <form id="loginForm" action="api/v1/login" novalidate>
   <p class="message"></p>
+  <h2 style="text-align: center;">login</h2>
+  <p style="text-align: center; margin-bottom: 8px;">here you can sign in to the app</p>
   <fieldset id="emailField">
-    <label for="email">Email</label>
+    <label for="email">email</label>
     <input type="email" id="email" name="email" required />
   </fieldset>
   <fieldset id="passwordField">
-    <label for="password">Password</label>
+    <label for="password">password</label>
     <input type="password" id="password" name="password" required />
   </fieldset>
-  <button class="primary" type="submit">Sign In</button>
-  <a href="/register" 
-    hx-get="/register" 
-    hx-target="#content" 
-    hx-swap="innerHTML"
-    hx-push-url="true">
-    Create a new account
-  </a>
+  <button class="primary" type="submit">login</button>
+  <a href="/register" hx-get="/register" hx-target="#content" hx-swap="innerHTML" hx-push-url="true">create a new account</a>
 </form>
 
 <script>
@@ -72,6 +68,7 @@
             window.location.href = '/settings';
           } else {
             document.querySelector('.message').textContent = result.message;
+            
           }
         } catch (error) {
           console.error('Error:', error);

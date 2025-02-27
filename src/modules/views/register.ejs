@@ -1,16 +1,23 @@
 <form action="api/v1/register" novalidate>
   <p class="message"></p>
+  <h2 style="text-align: center;">sign up</h2>
+  <p style="text-align: center; margin-bottom: 8px;">start your journey by creating an account</p>
   <fieldset>
-    <label for="email">Email</label>
+    <label for="email">email</label>
     <input type="email" id="email" name="email" required />
   </fieldset>
   <fieldset>
-    <label for="password">Password</label>
+    <label for="password">password</label>
     <input type="password" id="password" name="password" required />
-    <span>Password must be at least 8 characters long.</span>
   </fieldset>
-  <button class="primary" type="submit">Create a new account</button>
-  <a href="/login" class="nav-link">I already have an account</a>
+  <button class="primary" type="submit">create a new account</button>
+  <a href="/login" 
+  hx-get="/login" 
+  hx-target="#content" 
+  hx-swap="innerHTML"
+  hx-push-url="true">
+  sign in to my account
+</a>
 </form>
 
 <script>

@@ -44,9 +44,9 @@ table {
 /* COLOR PALETTE */
 
 :root {
-  --primary-color: #57CC99;
-  --secondary-color: #C7F9CC;
-  --text-color: #040C10;
+  --primary-color: #191E23;
+  --secondary-color: #e6ebf0;
+  --text-color: #FFF;
   --background-color: #f9f9f9;
   --danger: #ef476f;
 }
@@ -54,24 +54,23 @@ table {
 /* BUTTON */
 
 button.primary {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: 2px solid var(--primary-color);
+  border-radius: 4px;
   padding: 8px 16px;
-  font-size: 14px;
-  text-transform: uppercase;
+  font-size: 16px;
   font-weight: 600;
 }
 
-button.action {
-  background-color: var(--danger);
-  color: var(--background-color);
-  padding: 8px 16px;
-  font-size: 14px;
-  text-transform: uppercase;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-}
 
 /* LAYOUT */
+
+body#public {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
 
 body#private {
   min-height: 100vh;
@@ -83,10 +82,11 @@ body#private {
 body#private main {
   height: 100vh;
   padding: 16px;
+  border-left: 2px solid var(--primary-color);
 }
 
 body#public main  {
-  height: 100vh;
+  height: 90%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -102,8 +102,9 @@ form {
 }
 
 label {
-  font-weight: bold;
   margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 input {
@@ -113,11 +114,11 @@ input {
   border: 2px solid silver;
   border-radius: 4px;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 input:focus {
-  border: 2px solid black;
+  border: 2px solid var(--primary-color);
 }
 
 fieldset {
@@ -137,12 +138,11 @@ form a {
 /* TABLE */
 
 table {
-  margin-top: 10px;
-  background-color: var(--secondary-color);
+  border: 2px solid var(--primary-color);
 }
 
 th {
-  background-color: var(--primary-color);
+  background-color: var(--secondary-color);
   text-align: left;
   padding: 10px;
 }

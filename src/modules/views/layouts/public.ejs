@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= title %></title>
   <link rel="stylesheet" href="/public/css/style.css">
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.1/cdn/shoelace-autoloader.js"></script>  
   <script src="/htmx/htmx.min.js"></script>
 </head>
 <body id="public">
+  <%- include('../partials/header') %>
   <main id="content">
     <%- body %>
   </main>
