@@ -33,7 +33,8 @@ export const registerUser = async (
   try {
     const { email, password } = data;
 
-    const existingUser = await findUserByEmail(email);
+    const normalizedEmail = email.trim().toLowerCase();
+    const existingUser = await findUserByEmail(normalizedEmail);
 
     if (existingUser) {
       return {
@@ -45,7 +46,7 @@ export const registerUser = async (
 
     const passwordHash = await bcrypt.hash(password, 12);
 
-    const result = await insertUser(email, passwordHash);
+    const result = await insertUser(normalizedEmail, passwordHash);
 
     if (!result) {
       return {

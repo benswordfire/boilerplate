@@ -1,5 +1,12 @@
 import crypto from 'crypto';
-import { removeTwoFactorAuthToken, insertTwoFactorAuthToken, findTwoFactorAuthTokenByUserId, removeEmailVerificationToken, findEmailVerificationTokenByEmail, insertEmailVerificationToken, findEmailVerificationTokenByUserId } from '../models/token.model';
+import { 
+  insertTwoFactorAuthToken, 
+  findTwoFactorAuthTokenByUserId, 
+  removeTwoFactorAuthToken, 
+  insertEmailVerificationToken, 
+  findEmailVerificationTokenByUserId,
+  removeEmailVerificationToken
+} from '../models/token.model';
 
 const generateTwoFactorAuthToken = (): string => {
   return crypto.randomInt(100_000, 1_000_000).toString();
@@ -9,11 +16,10 @@ const generateEmailVerificationToken = (): string => {
   return crypto.randomBytes(36).toString('hex');
 }
 
-export const createTwoFactorAuthToken = async(
+export const createTwoFactorAuthToken = async (
   userId: string
 ): Promise<string> => {
   try {
-    console.log(userId)
     if (!userId) {
       throw new Error('userId is missing')
     }
@@ -42,7 +48,7 @@ export const createTwoFactorAuthToken = async(
   }
 }
 
-export const createEmailVerificationToken = async(
+export const createEmailVerificationToken = async (
   userId: string
 ): Promise<string> => {
   try {

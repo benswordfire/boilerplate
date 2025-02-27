@@ -2,12 +2,21 @@ import mysql from 'mysql2/promise';
 import pool from '../../../config/database/mysql';
 import { TwoFactorAuthToken } from '../types/tokens/TwoFactorAuthToken';
 import { EmailVerificationToken } from '../types/tokens/EmailVerificationToken';
+import { logger } from '../../../config/logger/logger';
 
 // TWO FACTOR AUTHENTICATION TOKEN
 
-export const insertTwoFactorAuthToken = async (userId: string, token: string, expiresAt: Date): Promise<mysql.ResultSetHeader> => {
+export const insertTwoFactorAuthToken = async (
+  userId: string, 
+  token: string, 
+  expiresAt: Date
+): Promise<mysql.ResultSetHeader> => {
   try {
-    const query = 'INSERT INTO two_factor_auth_tokens (userId, token, expiresAt) VALUES (?, ?, ?)';
+    const query = `
+      INSERT INTO two_factor_auth_tokens 
+      (userId, token, expiresAt) 
+      VALUES (?, ?, ?)
+    `;
   
     const [rows]: [mysql.ResultSetHeader, mysql.FieldPacket[]] = await pool.execute<mysql.ResultSetHeader>(query, [userId, token, expiresAt]);
   

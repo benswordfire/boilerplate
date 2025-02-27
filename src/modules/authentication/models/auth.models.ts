@@ -7,9 +7,11 @@ export const insertUser = async (
   email: string, 
   passwordHash: string
 ): Promise<Pick<User, 'id'> | null> => {
+  logger.debug(`Attempting to insert user to DB with email: ${email}`)
   try {
     const query = `
-      INSERT INTO users (email, passwordHash)
+      INSERT INTO users 
+      (email, passwordHash)
       VALUES (?, ?)
     `;
 
@@ -20,7 +22,9 @@ export const insertUser = async (
     if (!rows.length) return null;
 
     const result: Pick<User, 'id'> = { id: rows[0].id };
-    logger.info(`User with id:${result} insterted to DB`)
+    
+    logger.info(`User insterted to DB with id: ${result.id}`);
+    
     return result;
   } catch (error) {
     logger.error(`Failed to insert user to database with email: ${email}`, error)
@@ -31,6 +35,7 @@ export const insertUser = async (
 export const findUserById = async (
   userId: string
 ): Promise<User | null> => {
+  logger.debug(`Attempting to retrieve user from DB with id: ${userId}`);
   try {
     const query = `
       SELECT 
@@ -43,7 +48,6 @@ export const findUserById = async (
         phoneNumber,
         isPhoneNumberVerified, 
         isTwoFactorEnabled, 
-        isEmailVerified, 
         createdAt,
         updatedAt
       FROM users 
@@ -51,9 +55,14 @@ export const findUserById = async (
     `;
     const [rows]: [mysql.RowDataPacket[], mysql.FieldPacket[]] = await pool.execute<mysql.RowDataPacket[]>(query, [userId]);
 
-    if (!rows.length) return null;
+    if (!rows.length) {
+      logger.debug(`User not found with the id: ${userId}`);
+      return null;
+    }
 
     const result: User = rows[0] as User;
+
+    logger.info(`User retrieved with the id: ${userId}`);
 
     return result;
   } catch (error) {
@@ -66,8 +75,8 @@ export const findUserById = async (
 export const findUserByEmail = async (
   email: string
 ): Promise<User | null> => {
+  logger.debug(`Attempting to retrieve user from DB with email: ${email}`);
   try {
-    const normalizedEmail = email.trim().toLowerCase();
     
     const query = `
       SELECT 
@@ -85,11 +94,16 @@ export const findUserByEmail = async (
       WHERE email = ?
       LIMIT 1
     `;
-    const [rows]: [mysql.RowDataPacket[], mysql.FieldPacket[]] = await pool.execute<mysql.RowDataPacket[]>(query, [normalizedEmail]);
+    const [rows]: [mysql.RowDataPacket[], mysql.FieldPacket[]] = await pool.execute<mysql.RowDataPacket[]>(query, [email]);
   
-    if (!rows.length) return null;
-  
+    if (!rows.length) {
+      logger.debug(`User not found with the email: ${email}`);
+      return null;
+    }
+
     const result: User = rows[0] as User;
+
+    logger.info(`User retrieved with the email: ${email}`);
   
     return result;
   } catch (error) {
@@ -103,32 +117,38 @@ export const refreshUser = async (
   userId: string,
   updateFields: Partial<User>
 ): Promise<mysql.ResultSetHeader> => {
-
-  const fieldsToUpdate = Object.keys(updateFields);
+  try {
+    const fieldsToUpdate = Object.keys(updateFields);
+    
+    if (fieldsToUpdate.length === 0) {
+      logger.warn('No fields provided for user update');
+      throw new Error('No fields provided to update');
+    }
   
-  if (fieldsToUpdate.length === 0) {
-    throw new Error('No fields provided to update');
+    const allowedFields = ['username', 'email', 'firstName', 'lastName', 'isEmailVerified', 'phoneNumber', 'isPhoneNumberVerified', 'passwordHash', 'isTwoFactorEnabled'];
+    const validFields = fieldsToUpdate.filter(field => allowedFields.includes(field));
+  
+    if (validFields.length === 0) {
+      logger.warn(`Invalid fields provided for update: ${fieldsToUpdate.join(', ')}`);
+      throw new Error('Invalid field(s) provided');
+    }
+  
+    const setClause = validFields.map(field => `${field} = ?`).join(', ');
+  
+    const values = validFields.map(field => updateFields[field as keyof User]);
+  
+    values.push(userId);
+  
+    const query = `UPDATE users SET ${setClause} WHERE id = ?`;
+  
+    const [result]: [mysql.ResultSetHeader, mysql.FieldPacket[]] = await pool.execute<mysql.ResultSetHeader>(
+      query,
+      values
+    );
+    logger.info(`Updated ${result.affectedRows} fields for user ${userId}`);
+    return result;
+  } catch (error) {
+    logger.error(`Failed to refresh user ${userId}`, error);
+    throw new Error('Failed to update user');
   }
-
-  const allowedFields = ['username', 'email', 'firstName', 'lastName', 'isEmailVerified', 'phoneNumber', 'isPhoneNumberVerified', 'passwordHash', 'isTwoFactorEnabled'];
-  const validFields = fieldsToUpdate.filter(field => allowedFields.includes(field));
-
-  if (validFields.length === 0) {
-    throw new Error('Invalid field(s) provided');
-  }
-
-  const setClause = validFields.map(field => `${field} = ?`).join(', ');
-
-  const values = validFields.map(field => updateFields[field as keyof User]);
-
-  values.push(userId);
-
-  const query = `UPDATE users SET ${setClause} WHERE id = ?`;
-
-  const [result]: [mysql.ResultSetHeader, mysql.FieldPacket[]] = await pool.execute<mysql.ResultSetHeader>(
-    query,
-    values
-  );
-
-  return result;
 };
