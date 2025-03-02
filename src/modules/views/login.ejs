@@ -1,35 +1,48 @@
 <form id="loginForm" action="api/v1/login" novalidate>
-  <p class="message"></p>
-  <h2 style="text-align: center;">login</h2>
-  <p style="text-align: center; margin-bottom: 8px;">here you can sign in to the app</p>
+  <div class="notification"  
+  style="
+  background-color: #f5f7fa;
+  border: 2px solid #ff3c3f;
+  border-radius: 4px;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  gap: 4px;
+  margin-bottom: 32px;
+  font-size: 16px;
+  display: none;
+  ">
+    <sl-icon style="height: 20px; width: 20px; color: #ff3c3f;" name="exclamation-circle-fill"></sl-icon>
+    <p class="message"></p>
+  </div>
+  <h2 style="text-align: center;">Welcome back!</h2>
+  <p style="text-align: center; margin-bottom: 8px; color: #838383;">Login with your credentials.</p>
   <fieldset id="emailField">
-    <label for="email">email</label>
+    <label for="email">Email:</label>
     <input type="email" id="email" name="email" required />
   </fieldset>
   <fieldset id="passwordField">
-    <label for="password">password</label>
+    <label for="password">Password:</label>
     <input type="password" id="password" name="password" required />
   </fieldset>
-  <button class="primary" type="submit">login</button>
-  <a href="/register" hx-get="/register" hx-target="#content" hx-swap="innerHTML" hx-push-url="true">create a new account</a>
-  <a href="/google">Login with Google</a>
-  <div style="display: flex; justify-content: center; align-items: center; gap: 16px; width: 100%;">
-    <div style="
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    gap: 4px; 
-    background-color: var(--secondary-color);
-    padding: 8px;
-    border-radius: 4px;">
-      <img src="../../public/google.svg" alt="Google Login" width='24px'>
-      <p style="font-weight: 600; color: var(--primary-color);">Google</p>
-    </div>
-    <div style="display: flex; justify-content: center; align-items: center; gap: 4px; background-color: var(--secondary-color);">
-      <img src="../../public/google.svg" alt="Google Login" width='24px'>
-      <p style="font-weight: 600; color: var(--primary-color);">Google</p>
-    </div>
-  </div>
+  <button class="primary" type="submit">Login</button>
+  <p style="text-align: center;">or</p>
+  <a style="
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  gap: 4px; 
+  background-color: var(--secondary-color);
+  padding: 8px;
+  border-radius: 4px;
+  width: 100%;
+  font-weight: 500; 
+  color: var(--primary-color); 
+  text-decoration: none; 
+  cursor: pointer;" 
+  href="/google">
+  <img src="../../public/google.png" alt="Google Login" width='24px'>
+  Login with Google</a>
 </form>
 
 <script>
@@ -85,8 +98,9 @@
           } else if (result.authorized) {
             window.location.href = '/settings';
           } else {
+            const notification = document.querySelector('.notification');
+            notification.style.display = 'flex';
             document.querySelector('.message').textContent = result.message;
-            
           }
         } catch (error) {
           console.error('Error:', error);
