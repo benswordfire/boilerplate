@@ -12,6 +12,24 @@
   </fieldset>
   <button class="primary" type="submit">login</button>
   <a href="/register" hx-get="/register" hx-target="#content" hx-swap="innerHTML" hx-push-url="true">create a new account</a>
+  <a href="/google">Login with Google</a>
+  <div style="display: flex; justify-content: center; align-items: center; gap: 16px; width: 100%;">
+    <div style="
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    gap: 4px; 
+    background-color: var(--secondary-color);
+    padding: 8px;
+    border-radius: 4px;">
+      <img src="../../public/google.svg" alt="Google Login" width='24px'>
+      <p style="font-weight: 600; color: var(--primary-color);">Google</p>
+    </div>
+    <div style="display: flex; justify-content: center; align-items: center; gap: 4px; background-color: var(--secondary-color);">
+      <img src="../../public/google.svg" alt="Google Login" width='24px'>
+      <p style="font-weight: 600; color: var(--primary-color);">Google</p>
+    </div>
+  </div>
 </form>
 
 <script>

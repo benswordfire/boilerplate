@@ -1,10 +1,14 @@
-import winston from 'winston';
+import { createLogger, format, transports } from 'winston';
 
-export const logger = winston.createLogger({
+export const logger = createLogger({
   level: 'debug',
-  format: winston.format.json(),
+  format: format.combine(
+    format.colorize(),
+    format.timestamp(),
+    format.json()
+  ),
   transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: 'app.log'})
+    new transports.Console(),
+    new transports.File({ filename: 'app.log'})
   ]
 });

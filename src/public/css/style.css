@@ -44,7 +44,7 @@ table {
 /* COLOR PALETTE */
 
 :root {
-  --primary-color: #191E23;
+  --primary-color: #131517;
   --secondary-color: #e6ebf0;
   --text-color: #FFF;
   --background-color: #f9f9f9;
@@ -61,6 +61,16 @@ button.primary {
   padding: 8px 16px;
   font-size: 16px;
   font-weight: 600;
+  cursor: pointer;
+}
+
+
+a.auth {
+  background-color: var(--secondary-color);
+  padding: 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 
@@ -86,7 +96,7 @@ body#private main {
 }
 
 body#public main  {
-  height: 90%;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;

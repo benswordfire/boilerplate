@@ -6,6 +6,7 @@ import session from 'express-session';
 import { RedisStore } from 'connect-redis';
 import { pool } from './config/database/redis';
 import authRouter from './modules/authentication/routes/auth.routes';
+import googleAuthRouter from './modules/authentication/google/routes/google.auth.routes';
 import { authorize, currentUser } from './modules/authentication/middlewares/auth.middleware';
 
 const app = express();
@@ -39,13 +40,26 @@ app.use(
 );
 
 app.use(authRouter);
+app.use(googleAuthRouter);
+
+app.get('/', (request: Request, response: Response) => {
+  response.render('index', { title: 'Home', layout: 'layouts/public' });
+});
 
 app.get('/login', (request: Request, response: Response) => {
-  response.render('login', { title: 'Login', layout: 'layouts/public' });
+  if (request.headers['hx-request']) {
+    response.render('login', { title: 'Login', layout: false, user: request.user });
+  } else {
+    response.render('login', { title: 'Login', layout: 'layouts/public', user: request.user });
+  }
 });
 
 app.get('/register', (request: Request, response: Response) => {
-  response.render('register', { title: 'Registration', layout: 'layouts/public' });
+  if (request.headers['hx-request']) {
+    response.render('register', { title: 'Registration', layout: false, user: request.user });
+  } else {
+    response.render('register', { title: 'Registration', layout: 'layouts/public', user: request.user });
+  }
 });
 
 app.get('/email-verification', (request: Request, response: Response) => {

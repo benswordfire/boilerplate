@@ -113,6 +113,67 @@ export const findUserByEmail = async (
   
 };
 
+export const insertGoogleUser = async (
+  email: string, 
+  googleId: string,
+): Promise<Pick<User, 'id'> | null> => {
+  logger.debug(`Attempting to insert Google user to DB with email: ${email}`)
+  try {
+    const query = `
+      INSERT INTO users 
+      (email, googleId)
+      VALUES (?, ?)
+    `;
+
+    await pool.execute<mysql.ResultSetHeader>(query, [email, googleId]);
+
+    const [rows]: [mysql.RowDataPacket[], mysql.FieldPacket[]] = await pool.execute<mysql.RowDataPacket[]>(`SELECT id FROM users WHERE email = ? LIMIT 1`, [email]);
+
+    if (!rows.length) return null;
+
+    const result: Pick<User, 'id'> = { id: rows[0].id };
+    
+    logger.info(`Google user insterted to DB with id: ${result.id}`);
+    
+    return result;
+  } catch (error) {
+    logger.error(`Failed to insert Google user to database with email: ${email}`, error)
+    throw new Error('Failed to create Google user in database');
+  }
+};
+
+export const findUserByGoogleId = async (
+  googleId: string
+): Promise<Pick<User, 'id'> | null>  => {
+  logger.debug(`Attempting to retrieve user from DB with google id: ${googleId}`);
+  try {
+    const query = `
+      SELECT id
+      FROM users 
+      WHERE googleId = ?
+      LIMIT 1
+    `;
+    const [rows]: [mysql.RowDataPacket[], mysql.FieldPacket[]] = await pool.execute<mysql.RowDataPacket[]>(query, [googleId]);
+  
+    if (!rows.length) {
+      logger.debug(`No user found with the provided google id: ${googleId}`);
+      return null;
+    }
+
+    // If user is found, we can return a simplified result with just the user id or basic information
+    const result: User = { id: rows[0].id } as User;  // Only retrieving necessary data (e.g., user id)
+
+    logger.info(`User retrieved with google id: ${googleId}`);
+    logger.debug(`HELLO result: ${result}`)
+    return result;
+  } catch (error) {
+    logger.error(`Failed to find user with google id: ${googleId}`, error)
+    throw new Error('Failed to retrieve user by google id');
+  }
+}
+
+
+
 export const refreshUser = async (
   userId: string,
   updateFields: Partial<User>
