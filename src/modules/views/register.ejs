@@ -1,16 +1,33 @@
 <form action="api/v1/register" novalidate>
   <p class="message"></p>
-  <h2 style="text-align: center;">sign up</h2>
-  <p style="text-align: center; margin-bottom: 8px;">start your journey by creating an account</p>
+  <h2 style="text-align: center;">Create a new account</h2>
+  <p style="text-align: center; margin-bottom: 8px;">Start your journey by creating an account.</p>
   <fieldset>
-    <label for="email">email</label>
+    <label for="email">Email</label>
     <input type="email" id="email" name="email" required />
   </fieldset>
   <fieldset>
-    <label for="password">password</label>
+    <label for="password">Password</label>
     <input type="password" id="password" name="password" required />
   </fieldset>
-  <button class="primary" type="submit">create a new account</button>
+  <button class="primary" type="submit">Create a new account</button>
+  <p style="text-align: center;">or</p>
+  <a style="
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  gap: 4px; 
+  background-color: var(--secondary-color);
+  padding: 8px;
+  border-radius: 4px;
+  width: 100%;
+  font-weight: 500; 
+  color: var(--primary-color); 
+  text-decoration: none; 
+  cursor: pointer;" 
+  href="/google">
+  <img src="../../public/google.png" alt="Google Login" width='24px'>
+  Sign up with Google</a>
   <a href="/login" 
   hx-get="/login" 
   hx-target="#content" 
@@ -38,7 +55,17 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify(data)
         });
         const result = await response.json();
-        document.querySelector('.message').textContent = result.message;
+
+        const existingToast = form.querySelector('toast-message');
+        if (existingToast) {
+          existingToast.remove();
+        };
+
+        let toastMessage = document.createElement('toast-message');
+
+        form.prepend(toastMessage);
+
+        toastMessage.showToastMessage(result.message, result.success ? 'success' : 'error');
       } catch (error) {
         console.log(error);
       }
