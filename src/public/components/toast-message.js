@@ -8,15 +8,17 @@ class ToastMessage extends HTMLElement {
         .toast-container {
           display: flex;
           align-items: center;
+          justify-content: center;
           gap: 8px;
           padding: 10px;
-          background-color: var(--secondary-color);
+          background-color: #f5f7fa;
           font-size: 16px;
           border-radius: 4px;
           border: 2px solid transparent;
         }
         .toast-message {
           margin: 0;
+          text-align: center;
         }
         .success { border-color: #1BE163; }
         .error { border-color: #FF3C3f; }
