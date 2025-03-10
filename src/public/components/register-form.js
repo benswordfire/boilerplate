@@ -9,45 +9,27 @@ class RegisterForm extends HTMLElement {
 
   connectedCallback() {
     this.render();
-    this.addEventListeners();
+    this.handleSubmit();
   }
 
   render() {
     this.shadowRoot.innerHTML = `
-    <style>
-    /* Add these styles */
-    :host {
-      display: block;
-      max-width: 480px;
-      width: 100%;
-      padding: 16px;
-    }
-
-    form {
-      max-width: 480px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    </style>
     <form action="api/v1/register" novalidate>
-    <h2 style="text-align: center;">Create a new account</h2>
-    <p style="text-align: center; margin-bottom: 8px;">Start your journey by creating an account.</p>
-    <form-field label="Email" type="email" inputid="email" name="email" required></form-field>
-    <form-field label="Password" type="password" inputid="password" name="password" required></form-field>
-    <primary-button>Create a new account</primary-button>
-    <p style="text-align: center;">or</p>
-    <a class="google-btn" href="/google">
-        <img src="../../public/google.png" alt="Google Login" width="24px">
-        Sign up with Google
-    </a>
+      <h2 style="text-align: center;">Create a new account</h2>
+      <p style="text-align: center; margin-bottom: 8px;">Start your journey by creating an account.</p>
+      <form-field label="Email" type="email" inputid="email" name="email" required></form-field>
+      <form-field label="Password" type="password" inputid="password" name="password" required></form-field>
+      <primary-button>Create a new account</primary-button>
+      <p style="text-align: center;">or</p>
+      <a class="google-btn" href="/google">
+          <img src="../../public/google.png" alt="Google Login" width="24px">
+          Sign up with Google
+      </a>
     </form>
     `;
   }
 
-  addEventListeners() {
+  handleSubmit() {
     const form = this.shadowRoot.querySelector('form');
 
     form.addEventListener('submit', async (event) => {

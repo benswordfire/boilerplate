@@ -34,20 +34,17 @@ class ToastMessage extends HTMLElement {
     const toast = this.shadowRoot.querySelector('.toast-container');
     const toastContent = this.shadowRoot.querySelector('.toast-message');
     const toastIcon = this.shadowRoot.querySelector('#toast-icon');
-    console.log("Icon element:", toastIcon);
     if (!toastIcon) {
-      console.error("Toast icon not found.");
-      console.log("Icon element:", toastIcon);
       return;
     }
 
     if (type === 'success') {
       toastIcon.setAttribute('name', 'check-circle-fill');
       console.log('icon:set')
-      toastIcon.style.color = '#1be163';
+      toastIcon.style.color = '#1BE163';
     } else if (type === 'error') {
-      toastIcon.setAttribute('name', 'check-circle-fill');
-      toastIcon.style.color = '#ff3c3f';
+      toastIcon.setAttribute('name', 'x-circle-fill');
+      toastIcon.style.color = '#FF3C3F';
     }
 
     toastContent.textContent = message;

@@ -4,7 +4,7 @@ class FormField extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['label', 'type', 'name', 'inputid', 'required'];
+    return ['label', 'type', 'name', 'id', 'required'];
   }
 
   connectedCallback() {
@@ -18,7 +18,7 @@ class FormField extends HTMLElement {
   render() {
     const label = this.getAttribute('label') || '';
     const type = this.getAttribute('type') || 'text';
-    const inputId = this.getAttribute('inputid') || '';
+    const id = this.getAttribute('id') || '';
     const name = this.getAttribute('name') || '';
     const required = this.hasAttribute('required');
 
@@ -66,8 +66,8 @@ class FormField extends HTMLElement {
 
     </style>
     <fieldset>
-      <label for="${inputId}">${label}</label>
-      <input type="${type}" id="${inputId}" name="${name}" ${required ? 'required' : ''}>
+      <label for="${id}">${label}</label>
+      <input type="${type}" id="${id}" name="${name}" ${required ? 'required' : ''}>
     </fieldset>
     `;
   }
