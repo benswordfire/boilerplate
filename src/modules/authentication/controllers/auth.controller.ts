@@ -79,7 +79,7 @@ export const login = async (
     if(!result.success && result.message === 'twoFactorIsRequired') {
       response
         .status(result.status)
-        .json({ twoFactorRequired: true })
+        .json({ twoFactorRequired: true, twoFactorAuthType: result.isTwoFactorEnabled })
       return;
     }
 

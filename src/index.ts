@@ -62,6 +62,14 @@ app.get('/register', (request: Request, response: Response) => {
   }
 });
 
+app.get('/password-reset', (request: Request, response: Response) => {
+  if (request.headers['hx-request']) {
+    response.render('password-reset', { title: 'Password reset', layout: false });
+  } else {
+    response.render('password-reset', { title: 'Password reset', layout: 'layouts/public'});
+  }
+});
+
 app.get('/email-verification', (request: Request, response: Response) => {
   response.render('verification', { title: 'Email Verification', token: request.query.token, layout: 'layouts/public' });
 });
