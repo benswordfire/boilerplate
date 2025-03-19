@@ -78,6 +78,7 @@ app.get('/settings', authorize, currentUser, (request: Request, response: Respon
   if (request.headers['hx-request']) {
     response.render('settings', { title: 'Settings', layout: false, user: request.user });
   } else {
+    console.log(request.user)
     response.render('settings', { title: 'Settings', layout: 'layouts/private', user: request.user });
   }
 });

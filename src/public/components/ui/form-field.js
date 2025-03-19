@@ -20,6 +20,7 @@ class FormField extends HTMLElement {
     const type = this.getAttribute('type') || 'text';
     const id = this.getAttribute('id') || '';
     const name = this.getAttribute('name') || '';
+    const placeholder = this.getAttribute('placeholder') ?? '';
     const required = this.hasAttribute('required');
 
     this.innerHTML = `
@@ -33,7 +34,6 @@ class FormField extends HTMLElement {
 
     label {
       color: var(--primary-color);
-      margin-bottom: 4px;
       font-size: 16px;
       font-weight: 600;
     }
@@ -45,7 +45,7 @@ class FormField extends HTMLElement {
       box-sizing: border-box;
       padding: 8px;
       margin-top: 4px;
-      border: 2px solid silver;
+      border: 2px solid #B5BCC5;
       border-radius: 4px;
       font-size: 16px;
       font-weight: 500;
@@ -67,7 +67,7 @@ class FormField extends HTMLElement {
     </style>
     <fieldset>
       <label for="${id}">${label}</label>
-      <input type="${type}" id="${id}" name="${name}" ${required ? 'required' : ''}>
+      <input type="${type}" id="${id}" name="${name}" placeholder="${placeholder}" ${required ? 'required' : ''}>
     </fieldset>
     `;
   }

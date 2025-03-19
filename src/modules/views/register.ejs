@@ -1,1 +1,13 @@
-<register-form></register-form>
+<title><%= title %></title>
+<div style="display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 24px;">
+  <register-form></register-form>
+  <p style="font-size: 14px;">Already have an account?  
+    <a stlye="color: red;" href="/login" 
+      hx-get="/login" 
+      hx-target="#content" 
+      hx-swap="innerHTML"
+      hx-push-url="true">
+      Login here
+    </a>
+  </p>
+</div>

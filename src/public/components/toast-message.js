@@ -15,6 +15,7 @@ class ToastMessage extends HTMLElement {
           font-size: 16px;
           border-radius: 4px;
           border: 2px solid transparent;
+          margin-bottom: 24px;
         }
         .toast-message {
           margin: 0;

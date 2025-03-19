@@ -1,1 +1,13 @@
-<login-form></login-form>
+<title><%= title %></title>
+<div style="display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 24px;">
+  <login-form></login-form>
+  <p style="font-size: 14px;">New here?
+    <a class="nav-link" stlye="color: red;" href="/register" 
+      hx-get="/register" 
+      hx-target="#content" 
+      hx-swap="innerHTML"
+      hx-push-url="true">
+      Create an account
+    </a>
+  </p>
+</div>

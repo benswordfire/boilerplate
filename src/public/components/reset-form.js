@@ -18,7 +18,7 @@ class PasswordResetForm extends HTMLElement {
       <h2 style="text-align: center; font-size: 24px; color: var(--primary-color);">Reset your password</h2>
       <p style="text-align: center; margin-bottom: 8px; font-weight: 400px; color: #5a6b80;">Please provide the email address associated with your account and we will send you the instructions to reset your account.</p>
       <form-field label="Email" type="email" inputid="email" name="email" required></form-field>
-      <primary-button>Send instructions</primary-button>
+      <button id="submitButton" type="submit">Send instructions</button>
     </form>
     `;
   }

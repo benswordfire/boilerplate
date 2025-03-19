@@ -33,7 +33,6 @@ ul, ol {
 }
 
 a {
-  text-decoration: none;
   color: inherit;
 }
 
@@ -92,6 +91,24 @@ body#public main  {
   justify-content: center;
   align-items: center;
 }
+
+sl-tab-group {
+  --indicator-color: #ff3c3f;
+  --track-color: #FFF;
+}
+
+sl-tab {
+  color: var(--primary-color);
+  font-weight: 500;
+  border-radius: 4px;
+  width: 100px;
+  padding-bottom: 8px;
+}
+
+sl-tab-panel {
+  --padding: 16px 0px;
+}
+
 
 /* FORM */
 

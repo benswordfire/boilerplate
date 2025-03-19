@@ -31,7 +31,6 @@ ul, ol {
 }
 
 a {
-  text-decoration: none;
   color: inherit;
 }
 
@@ -41,12 +40,28 @@ table {
 }
 
 form {
-  max-width: 700px;
+  max-width: 480px;
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+}
+
+form.public {
   padding: 16px;
+}
+
+button {
+  width: 100%;
+  background-color: #ff3c3f;
+  color: #FFF;
+  border: 2px solid #ff3c3f;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .google-btn {
@@ -59,7 +74,22 @@ form {
   padding: 8px;
   border-radius: 4px;
   font-weight: 500;
+  text-decoration: none;
   cursor: pointer;
 }
+
+.invalid {
+  color:rgba(255, 60, 63, 0.7);
+}
+
+.valid {
+  color: #1BE163;
+}
+
+
+.tab.tab--active:not(.tab--disabled) {
+  background-color: #1BE163;
+}
+
 `);
 export default globalStyles;

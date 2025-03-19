@@ -7,10 +7,13 @@
   <link rel="stylesheet" href="/public/css/style.css">
   <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.1/cdn/shoelace-autoloader.js"></script>  
   <script src="/htmx/htmx.min.js"></script>
+  <script type="module" src="../../../public/components/general-settings-form.js" defer></script>
+  <script type="module" src="../../../public/components/security-settings-form.js" defer></script>
+  <script src="../../../public/components/ui/form-field.js"></script>
 </head>
 <body id="private">
   <%- include('../partials/sidebar') %>
-  <main id="content">
+  <main id="content" style="padding: 16px;">
     <%- body %>
   </main>
 </body>
