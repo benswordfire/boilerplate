@@ -44,3 +44,16 @@ export const sendEmailVerificationEmail = async (
     console.error(`Error! Failed to send 2FA token to: ${email}`)
   }
 }
+
+export const sendPasswordResetTokenEmail = async (
+  email: string,
+  token: string
+): Promise<void> => {
+  try {
+    const link = `${process.env.FRONTEND_URL}/password-reset?token=${token}`
+
+    await sendEmailNotification(email, '🤫 Psst! You Can Reset Your Password!', twoFactorAuthEmailTemplate(link))
+  } catch (error) {
+    console.error(`Error! Failed to send password reset token to: ${email}`)
+  }
+}

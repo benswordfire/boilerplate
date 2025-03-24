@@ -62,11 +62,19 @@ app.get('/register', (request: Request, response: Response) => {
   }
 });
 
+app.get('/forgot-password', (request: Request, response: Response) => {
+  if (request.headers['hx-request']) {
+    response.render('forgot-password', { title: 'Forgot password', layout: false });
+  } else {
+    response.render('forgot-password', { title: 'Forgot password', layout: 'layouts/public'});
+  }
+});
+
 app.get('/password-reset', (request: Request, response: Response) => {
   if (request.headers['hx-request']) {
     response.render('password-reset', { title: 'Password reset', layout: false });
   } else {
-    response.render('password-reset', { title: 'Password reset', layout: 'layouts/public'});
+    response.render('password-reset', { title: 'Password reset', layout: 'layouts/public', token: request.query.token });
   }
 });
 

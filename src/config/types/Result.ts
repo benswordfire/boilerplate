@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const ResultSchema = z.object({
   success: z.boolean(),
-  message: z.string(),
+  message: z.string().optional(),
   status: z.number(),
   data: z.object({}).optional(),
   authorized: z.boolean().optional(),

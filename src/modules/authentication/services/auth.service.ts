@@ -7,6 +7,7 @@ import {
 import { Result } from '../../../config/types/Result';
 import {
   sendEmailVerificationEmail,
+  sendPasswordResetTokenEmail,
   sendTwoFactorAuthTokenEmail,
 } from '../../notifications/services/email.service';
 import {
@@ -17,12 +18,14 @@ import {
 } from '../models/auth.models';
 import {
   findEmailVerificationTokenByToken,
+  findPasswordResetTokenByToken,
   findTwoFactorAuthTokenByUserId,
   removeTwoFactorAuthToken,
 } from '../models/token.model';
 import { LoginFormData, RegisterFormData } from '../types';
 import {
   createEmailVerificationToken,
+  createPasswordResetToken,
   createTwoFactorAuthToken,
 } from './token.service';
 import { User } from '../types/User';
@@ -312,6 +315,121 @@ export const updateUser = async (
   }
 }
 
-function findUserByUserId(email: any) {
-  throw new Error('Function not implemented.');
+export const forgotPassword = async (
+  email: string
+): Promise<Result> => {
+  try {
+    const user = findUserByEmail(email);
+
+    if (!user) {
+      return {
+        success: false,
+        message: 'Invalid email address',
+        status: 400,
+      };
+    }
+
+    const token = await createPasswordResetToken(email);
+    
+    if (!token) {
+      return {
+        success: false,
+        message: 'Internal Server Error',
+        status: 500,
+      };
+    }
+
+    await sendPasswordResetTokenEmail(email, token);
+
+    return {
+      success: true,
+      message: 'If an account with that email exists, a reset link has been sent.',
+      status: 201,
+    };
+
+  } catch (error) {
+    console.error('Failed to initate password reset:', error);
+
+    return {
+      success: false,
+      message: 'Internal Server Error',
+      status: 500,
+    };
+  }
+}
+
+export const resetPassword = async (
+  passwordHash: string,
+  token: string
+): Promise<Result> => {
+  try {
+    console.log('XD:',passwordHash, token)
+    const existingToken = await findPasswordResetTokenByToken(token);
+    console.log(existingToken)
+    if (!existingToken) {
+      return {
+        success: false,
+        message: 'Invalid token',
+        status: 400,
+      };
+    }
+
+    const user = await findUserByEmail(existingToken.email)
+
+    if (!user) {
+      return {
+        success: false,
+        message: 'Invalid token',
+        status: 400,
+      };
+    }
+
+    await refreshUser(user?.id, { passwordHash });
+
+    return {
+      success: true,
+      message: 'Password updated successfully',
+      status: 200
+    }
+
+  } catch (error) {
+    console.error('Failed to initate password reset:', error);
+
+    return {
+      success: false,
+      message: 'Internal Server Error',
+      status: 500,
+    };
+  }
+}
+
+export const getCurrentUser = async (
+  userId: string
+): Promise<Result> => {
+  try {
+    const user = await findUserById(userId);
+
+    if (!user) {
+      return {
+        success: false,
+        message: 'Unauthorized',
+        status: 400,
+      };
+    }
+
+    return {
+      success: true,
+      data: user,
+      status: 200,
+    };
+
+  } catch (error) {
+    console.error('Failed to initate password reset:', error);
+
+    return {
+      success: false,
+      message: 'Internal Server Error',
+      status: 500,
+    };
+  }
 }

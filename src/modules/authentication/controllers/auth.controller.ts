@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
-import { loginUser, registerUser, updateUser, verifyEmail } from '../services/auth.service';
+import { forgotPassword, getCurrentUser, loginUser, registerUser, updateUser, verifyEmail, resetPassword } from '../services/auth.service';
 import { LoginFormData } from '../types';
 import { RegisterFormSchema } from '../types/RegisterFormSchema';
 import { z } from 'zod';
 import { User } from '../types/User';
 import bcrypt from 'bcryptjs';
 import { pool } from '../../../config/database/redis';
+import { findUserByEmail } from '../models/auth.models';
 
 export const register = async (
   request: Request,
@@ -165,3 +166,80 @@ export const logout = async (
       .json({ message: 'Internal server error during logout.' });
   }
 };
+
+export const forgot = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
+  try {
+    const { email } = request.body as { email: string };
+    const result = await forgotPassword(email);
+
+    response.status(result.status).json({
+      success: result.success,
+      message: result.message,
+    });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const reset = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
+  try {
+    const { token, password, confirmPassword } = request.body as { token: string, password: string, confirmPassword: string };
+
+    if (password !== confirmPassword) {
+      response.status(400).json({
+        success: false,
+        message: "Passwords do not match",
+      });
+      return;
+    }
+
+    const passwordHash = await bcrypt.hash(password, 12);
+    const result = await resetPassword(passwordHash, token);
+
+    response.status(result.status).json({
+      success: result.success,
+      message: result.message,
+    });
+
+
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+}
+
+
+export const currentUser = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
+  try {
+    const userId = request.session.user?.userId as string;
+    const result = await getCurrentUser(userId);
+
+    response.status(result.status).json({
+      success: result.success,
+      data: result.data
+    });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+}
+

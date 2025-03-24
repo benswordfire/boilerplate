@@ -3,6 +3,7 @@ import pool from '../../../config/database/mysql';
 import { TwoFactorAuthToken } from '../types/tokens/TwoFactorAuthToken';
 import { EmailVerificationToken } from '../types/tokens/EmailVerificationToken';
 import { logger } from '../../../config/logger/logger';
+import { PasswordResetToken } from '../types/tokens/PasswordResetToken';
 
 // TWO FACTOR AUTHENTICATION TOKEN
 
@@ -101,4 +102,40 @@ export const removeEmailVerificationToken = async (id: string): Promise<void> =>
   const query = 'DELETE FROM email_verification_tokens WHERE id = ?'
 
   await pool.execute<mysql.ResultSetHeader>(query, [id]);
+}
+
+// PASSWORD RESET TOKEN
+
+export const insertPasswordResetToken = async (email: string, token: string, expiresAt: Date): Promise<mysql.ResultSetHeader> => {
+  const query = 'INSERT INTO password_reset_tokens (email, token, expiresAt) VALUES (?, ?, ?)';
+
+  const [rows]: [mysql.ResultSetHeader, mysql.FieldPacket[]] = await pool.execute<mysql.ResultSetHeader>(query, [email, token, expiresAt]);
+
+  return rows;
+}
+
+export const findPasswordResetTokenByEmail = async (email: string): Promise<PasswordResetToken | null> => {
+  const query = 'SELECT * FROM password_reset_tokens WHERE email = ? LIMIT 1';
+
+  const [rows]: [mysql.RowDataPacket[], mysql.FieldPacket[]] = await pool.execute<mysql.RowDataPacket[]>(query, [email]);
+
+  const result = rows[0] as PasswordResetToken | null;
+
+  return result ?? null;
+}
+
+export const findPasswordResetTokenByToken = async (token: string): Promise<PasswordResetToken | null> => {
+  const query = 'SELECT * FROM password_reset_tokens WHERE token = ? LIMIT 1';
+
+  const [rows]: [mysql.RowDataPacket[], mysql.FieldPacket[]] = await pool.execute<mysql.RowDataPacket[]>(query, [token]);
+
+  const result = rows[0] as PasswordResetToken | null;
+
+  return result ?? null;
+}
+
+export const removePasswordResetToken = async (email: string): Promise<void> => {
+  const query = 'DELETE FROM password_reset_tokens WHERE email = ?'
+
+  await pool.execute<mysql.ResultSetHeader>(query, [email]);
 }
